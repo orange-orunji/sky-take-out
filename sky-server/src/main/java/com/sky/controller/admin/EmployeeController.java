@@ -103,4 +103,18 @@ public class EmployeeController {
         PageResult o = employeeService.pageFind(page);
         return Result.success(o);
     }
+
+    /**
+     * 状态修改
+     * @param status
+     * @param id
+     * @return
+     */
+    @ApiOperation("员工状态修改")
+    @PostMapping("/status/{status}")
+    public Result<String> setStatus(@PathVariable Integer status,@RequestParam("id") Integer id){
+        log.info("修改员工状态，id{}状态为{}", id, status);
+        employeeService.StartOrProfit(status,id);
+        return Result.success();
+    }
 }

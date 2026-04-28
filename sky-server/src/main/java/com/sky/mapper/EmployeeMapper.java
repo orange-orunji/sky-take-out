@@ -5,6 +5,7 @@ import com.sky.entity.Employee;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -27,4 +28,6 @@ public interface EmployeeMapper {
     void insert(Employee emp);
 
     List<Employee> pageFind(EmployeePageQueryDTO page);
+
+    void update(Employee emp);
 }

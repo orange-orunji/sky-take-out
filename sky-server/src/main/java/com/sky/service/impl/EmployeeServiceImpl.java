@@ -108,4 +108,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new PageResult(pageResult.getTotal(),pageResult.getResult());
     }
 
+    @Override
+    public void StartOrProfit(Integer status, Integer id) {
+        Employee id1 = Employee.builder().status(status).id(Long.valueOf(id)).build();
+        employeeMapper.update(id1);
+    }
+
 }
