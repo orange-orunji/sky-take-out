@@ -22,7 +22,6 @@ import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -108,10 +107,40 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new PageResult(pageResult.getTotal(),pageResult.getResult());
     }
 
+    /**
+     * 状态修改
+     * @param status
+     * @param id
+     */
     @Override
     public void StartOrProfit(Integer status, Integer id) {
         Employee id1 = Employee.builder().status(status).id(Long.valueOf(id)).build();
         employeeMapper.update(id1);
+    }
+
+    /**
+     * 根据id查询员工信息
+     * @param id
+     * @return
+     */
+    @Override
+    public Employee getById(Integer id) {
+        Employee emp = employeeMapper.getById(id);
+        emp.setPassword("****");
+        return emp;
+    }
+
+    /**
+     * 修改员工信息
+     * @param employee
+     */
+    @Override
+    public void update(EmployeeDTO employee) {
+        Employee emp = new Employee();
+        BeanUtils.copyProperties(employee, emp);
+        emp.setUpdateTime(LocalDateTime.now());
+        emp.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.update(emp);
     }
 
 }

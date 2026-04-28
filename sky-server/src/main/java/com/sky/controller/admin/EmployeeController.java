@@ -14,8 +14,6 @@ import com.sky.vo.EmployeeLoginVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -115,6 +113,25 @@ public class EmployeeController {
     public Result<String> setStatus(@PathVariable Integer status,@RequestParam("id") Integer id){
         log.info("修改员工状态，id{}状态为{}", id, status);
         employeeService.StartOrProfit(status,id);
+        return Result.success();
+    }
+
+    @GetMapping("/{id}")
+    @ApiOperation("根据Id员工查询")
+    public Result<Employee> getById(@PathVariable Integer id){
+        log.info("根据Id员工查询，id{}", id);
+        return Result.success(employeeService.getById(id));
+    }
+
+    /**
+     * 修改员工信息
+     * @param employee
+     */
+    @PutMapping
+    @ApiOperation("修改员工信息")
+    public Result update(@RequestBody EmployeeDTO employee){
+        log.info("修改员工信息：{}", employee);
+        employeeService.update(employee);
         return Result.success();
     }
 }

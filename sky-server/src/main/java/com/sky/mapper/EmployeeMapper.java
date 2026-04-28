@@ -30,4 +30,7 @@ public interface EmployeeMapper {
     List<Employee> pageFind(EmployeePageQueryDTO page);
 
     void update(Employee emp);
+
+    @Select("select * from employee where id = #{id}")
+    Employee getById(Integer id);
 }
