@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -78,5 +79,42 @@ public class DishServiceImpl implements DishService {
         dishMapper.delete(ids);
         //删除菜品对应的口味表的数据
         dishFlavorMapper.deleteByDishId(ids);
+    }
+
+    /**
+     * 根据id查询菜品和对应的口味
+     * @param id
+     * @return
+     */
+    @Override
+    public DishVO getById(Long id) {
+        Dish dish =  dishMapper.getById(id);
+        List<DishFlavor> dishFlavor = dishFlavorMapper.getById(id);
+        DishVO dishVO = new DishVO();
+        BeanUtils.copyProperties(dish,dishVO);
+        dishVO.setFlavors(dishFlavor);
+        return dishVO;
+    }
+
+    /**
+     * 修改菜品
+     * @param dishDTO
+     */
+    @Override
+    @Transactional
+    public void updateWithFalvor(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO,dish);
+        dishMapper.updateWithFlavor(dish);
+
+        dishFlavorMapper.deleteByDishId(Collections.singletonList(dish.getId()));
+
+        List<DishFlavor> flavor = dishFlavorMapper.getById(dish.getId());
+        if(flavor != null && !flavor.isEmpty()){
+            for (DishFlavor dishFlavor : flavor) {
+                dishFlavor.setDishId(dish.getId());
+            }
+            dishFlavorMapper.insertBatch(flavor);
+        }
     }
 }
