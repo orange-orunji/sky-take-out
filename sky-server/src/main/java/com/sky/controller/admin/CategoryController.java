@@ -9,8 +9,9 @@ import com.sky.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ import java.util.List;
 @Slf4j
 public class CategoryController {
 
-    @Autowired
+    @Resource
     private CategoryService categoryService;
 
     /**
@@ -84,7 +85,7 @@ public class CategoryController {
      */
     @PostMapping("/status/{status}")
     @ApiOperation("启用禁用分类")
-    public Result<String> startOrStop(@PathVariable("status") Integer status, Long id){
+    public Result<String> startOrStop(@PathVariable Integer status, Long id){
         categoryService.startOrStop(status,id);
         return Result.success();
     }
