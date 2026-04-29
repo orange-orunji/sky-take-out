@@ -5,7 +5,10 @@ import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.vo.DishVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface DishMapper {
@@ -31,4 +34,16 @@ public interface DishMapper {
      * @return
      */
     Page<DishVO> pageFind(DishPageQueryDTO dishPageQueryDTO);
+
+    /**
+     * 查询当前菜品是否正在起售
+     * @param "ids"
+     */
+    List<Long> getByIdForStatus(@Param("ids") List<Long> list);
+
+    /**
+     * 批量删除菜品
+     * @param "ids"
+     */
+    void delete(@Param("ids") List<Long> ids);
 }
