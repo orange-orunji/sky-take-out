@@ -82,4 +82,14 @@ public class SetMealServiceImpl implements SetMealService {
         }
         setMealMapper.deleteByIds(ids);
     }
+
+    /**
+     * 套餐起售停售
+     * @param id
+     * @param status
+     */
+    @Override
+    public void setStatus(Integer id, Integer status) {
+        setMealMapper.setStatus(id,status);
+    }
 }

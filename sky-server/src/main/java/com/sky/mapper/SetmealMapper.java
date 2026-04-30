@@ -9,6 +9,7 @@ import com.sky.vo.SetmealVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -63,4 +64,13 @@ public interface SetmealMapper {
      * @return
      */
     List<Object> getByIds(List<Long> ids);
+
+    /**
+     * 套餐起售停售
+     * @param id
+     * @param status
+     */
+    @Update("update setmeal set status = #{status} where id = #{id}")
+    @AutoFill(value = OperationType.UPDATE)
+    void setStatus(Integer id, Integer status);
 }
