@@ -50,4 +50,17 @@ public interface SetmealMapper {
      */
     @AutoFill(value = OperationType.INSERT)
     void save(Setmeal setmeal);
+
+    /**
+     * 批量删除套餐
+     * @param ""deleteByIds""
+     */
+    void deleteByIds(List<Long> ids);
+
+    /**
+     * 根据ids查询套餐
+     * @param ids
+     * @return
+     */
+    List<Object> getByIds(List<Long> ids);
 }

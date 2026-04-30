@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -57,6 +58,19 @@ public class SetMealController {
     public Result save(@RequestBody SetmealDTO dto){
         log.info("新增套餐：{}", dto);
         setMealService.saveWithDish(dto);
+        return Result.success();
+    }
+
+
+    /**
+     * 批量删除
+     * @param ids
+     */
+    @ApiOperation("批量删除")
+    @DeleteMapping
+    public Result deleteByIds(@RequestParam List<Long> ids){
+        log.info("批量删除：{}", ids);
+        setMealService.deleteByIds(ids);
         return Result.success();
     }
 

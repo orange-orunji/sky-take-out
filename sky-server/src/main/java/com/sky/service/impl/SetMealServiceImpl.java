@@ -2,6 +2,7 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.constant.MessageConstant;
 import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
@@ -65,5 +66,20 @@ public class SetMealServiceImpl implements SetMealService {
             setmealDishes.forEach(dish -> dish.setSetmealId(id));
             SetmealWithDishMapper.insertBatch(setmealDishes);
         }
+    }
+
+    /**
+     * 批量删除套餐
+     * @param ids
+     */
+    @Override
+    @Transactional
+    public void deleteByIds(List<Long> ids) {
+        SetmealWithDishMapper.deleteBySetmealId(ids);
+        List<Object> byIds = setMealMapper.getByIds(ids);
+        if (byIds!=null && !byIds.isEmpty()){
+            throw new RuntimeException(MessageConstant.SETMEAL_ON_SALE);
+        }
+        setMealMapper.deleteByIds(ids);
     }
 }

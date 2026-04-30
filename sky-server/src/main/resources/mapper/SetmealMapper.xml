@@ -8,6 +8,13 @@
                     (#{categoryId},#{name},#{price},#{status},
                      #{description},#{image})
      </insert>
+<!--   根据ids批量删除-->
+    <delete id="deleteByIds">
+        delete from setmeal where id in
+            <foreach item="id" collection="list" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+    </delete>
     <!--根据id集合查询对应的id-->
     <select id="getByIdForId" resultType="java.lang.Long">
         select id from setmeal_dish
@@ -69,5 +76,12 @@
                 and s.status = #{status}
             </if>
         </where>
+    </select>
+    <select id="getByIds" resultType="java.lang.Object">
+            select * from setmeal where id in
+            <foreach item="id" collection="ids" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+        and status = 1
     </select>
 </mapper>
