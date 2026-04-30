@@ -3,11 +3,42 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.SetmealMapper">
 
-    <select id="getById" resultType="java.lang.Long">
+    <select id="getByIdForId" resultType="java.lang.Long">
         select id from setmeal_dish
                   where dish_id in
                                     <foreach item="id" collection="ids" separator="," open="(" close=")">
                                         #{id}
                                     </foreach>
+    </select>
+
+    <resultMap id="SetmealVOMap" type="com.sky.vo.SetmealVO">
+        <id property="id" column="id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="name" column="name"/>
+        <result property="price" column="price"/>
+        <result property="status" column="status"/>
+        <result property="description" column="description"/>
+        <result property="image" column="image"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="categoryName" column="category_name"/>
+        <collection property="setmealDishes" ofType="com.sky.entity.SetmealDish">
+            <id property="id" column="sd_id"/>
+            <result property="setmealId" column="sd_setmeal_id"/>
+            <result property="dishId" column="sd_dish_id"/>
+            <result property="name" column="sd_name"/>
+            <result property="price" column="sd_price"/>
+            <result property="copies" column="sd_copies"/>
+        </collection>
+    </resultMap>
+    <select id="getById" resultMap="SetmealVOMap">
+        select s.id,s.category_id categoryId,s.name,s.price,s.status,s.description,
+               s.image,s.update_time,c.name categoryName,
+               sd.price sd_price,sd.dish_id sd_dish_id,
+               sd.name sd_name,sd.copies sd_copies,sd.id sd_id,
+               sd.setmeal_id sd_setmeal_id
+        from setmeal s
+        left join setmeal_dish sd on s.id = sd.setmeal_id
+        left join category c on s.category_id = c.id
+        where s.id = #{id}
     </select>
 </mapper>

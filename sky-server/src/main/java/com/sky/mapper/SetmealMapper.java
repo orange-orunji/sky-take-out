@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.sky.vo.SetmealVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -22,5 +23,7 @@ public interface SetmealMapper {
      * @param ids
      * @return
      */
-    List<Long> getById(@Param("ids") List<Long> ids);
+    List<Long> getByIdForId(@Param("ids") List<Long> ids);
+
+    SetmealVO getById(Long id);
 }

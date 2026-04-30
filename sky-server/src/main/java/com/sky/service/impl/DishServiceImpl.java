@@ -68,7 +68,7 @@ public class DishServiceImpl implements DishService {
             throw new RuntimeException(MessageConstant.DISH_ON_SALE);
         }
         //查询当前菜品是否绑定套餐
-        List<Long> setmealId =  setmealMapper.getById(ids);
+        List<Long> setmealId =  setmealMapper.getByIdForId(ids);
         for (Long l : setmealId) {
             if (l != null){
                 //绑定套餐中的菜品不能删除
