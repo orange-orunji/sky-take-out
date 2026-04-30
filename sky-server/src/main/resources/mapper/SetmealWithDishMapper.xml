@@ -2,17 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.SetmealWithDishMapper">
-<!--    批量插入套餐相关的菜品-->
+    <!--    批量插入套餐相关的菜品-->
     <insert id="insertBatch">
         INSERT INTO setmeal_dish (setmeal_id,dish_id,name,price,copies) VALUES
         <foreach collection="setmealDishes" item="dish" separator=",">
             (#{dish.setmealId},#{dish.dishId},#{dish.name},#{dish.price},#{dish.copies})
         </foreach>
     </insert>
+    <!--    修改套餐相关的菜品-->
+    <update id="update">
+        UPDATE setmeal_dish SET setmeal_id=#{setmealId},dish_id=#{dishId},name=#{name},price=#{price}
+                              ,copies=#{copies},update_time=#{updateTime},update_user=#{updateUser}
+        WHERE id=#{id}
+    </update>
     <delete id="deleteBySetmealId">
         DELETE FROM setmeal_dish WHERE setmeal_id in
-                    <foreach collection="ids" item="id" separator="," open="(" close=")">
-                        #{id}
-                    </foreach>
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
     </delete>
 </mapper>

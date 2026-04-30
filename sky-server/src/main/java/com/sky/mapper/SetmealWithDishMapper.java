@@ -23,4 +23,11 @@ public interface SetmealWithDishMapper {
      * @param ids
      */
     void deleteBySetmealId(List<Long> ids);
+
+    /**
+     * 批量更新
+     * @param setmealDishes
+     */
+    @AutoFill(value = OperationType.UPDATE)
+    void update(List<SetmealDish> setmealDishes);
 }

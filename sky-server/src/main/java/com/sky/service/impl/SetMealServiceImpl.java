@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -91,5 +92,21 @@ public class SetMealServiceImpl implements SetMealService {
     @Override
     public void setStatus(Integer id, Integer status) {
         setMealMapper.setStatus(id,status);
+    }
+
+    /**
+     * 修改套餐
+     * @param dto
+     */
+    @Override
+    @Transactional
+    public void update(SetmealDTO dto) {
+        Setmeal setmeal = new Setmeal();
+        BeanUtils.copyProperties(dto,setmeal);
+        setMealMapper.update(setmeal);
+        //先删后增
+        SetmealWithDishMapper.deleteBySetmealId(Collections.singletonList(setmeal.getId()));
+        List<SetmealDish> setmealDishes = dto.getSetmealDishes();
+        SetmealWithDishMapper.update(setmealDishes);
     }
 }

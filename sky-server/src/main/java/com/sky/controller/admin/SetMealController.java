@@ -87,4 +87,12 @@ public class SetMealController {
         setMealService.setStatus(id,status);
         return Result.success();
     }
+
+    @PutMapping
+    @ApiOperation("修改套餐")
+    public Result update(@RequestBody SetmealDTO dto){
+        log.info("修改套餐：{}", dto);
+        setMealService.update(dto);
+        return Result.success();
+    }
 }

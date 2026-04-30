@@ -73,4 +73,11 @@ public interface SetmealMapper {
     @Update("update setmeal set status = #{status} where id = #{id}")
     @AutoFill(value = OperationType.UPDATE)
     void setStatus(Integer id, Integer status);
+
+    /**
+     * 修改套餐
+     * @param setmeal
+     */
+    @AutoFill(value = OperationType.UPDATE)
+    void update(Setmeal setmeal);
 }
