@@ -1,5 +1,7 @@
 package com.sky.mapper;
 
+import com.github.pagehelper.Page;
+import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.vo.SetmealVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -25,5 +27,17 @@ public interface SetmealMapper {
      */
     List<Long> getByIdForId(@Param("ids") List<Long> ids);
 
+    /**
+     * 根据id查询套餐
+     * @param id
+     * @return
+     */
     SetmealVO getById(Long id);
+
+    /**
+     * 套餐分页查询
+     * @param dto
+     * @return
+     */
+    Page<SetmealVO> page(SetmealPageQueryDTO dto);
 }

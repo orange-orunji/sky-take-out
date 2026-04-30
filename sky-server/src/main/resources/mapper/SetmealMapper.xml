@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.SetmealMapper">
-
+<!--根据id集合查询对应的id-->
     <select id="getByIdForId" resultType="java.lang.Long">
         select id from setmeal_dish
                   where dish_id in
@@ -10,7 +10,7 @@
                                         #{id}
                                     </foreach>
     </select>
-
+<!--     定义查询返回的套餐类型-->
     <resultMap id="SetmealVOMap" type="com.sky.vo.SetmealVO">
         <id property="id" column="id"/>
         <result property="categoryId" column="category_id"/>
@@ -30,6 +30,7 @@
             <result property="copies" column="sd_copies"/>
         </collection>
     </resultMap>
+<!--    根据指定id查询-->
     <select id="getById" resultMap="SetmealVOMap">
         select s.id,s.category_id categoryId,s.name,s.price,s.status,s.description,
                s.image,s.update_time,c.name categoryName,
@@ -40,5 +41,27 @@
         left join setmeal_dish sd on s.id = sd.setmeal_id
         left join category c on s.category_id = c.id
         where s.id = #{id}
+    </select>
+<!--    分页查询-->
+    <select id="page" resultMap="SetmealVOMap">
+        select s.id,s.category_id categoryId,s.name,s.price,s.status,s.description,
+               s.image,s.update_time,c.name categoryName,
+               sd.price sd_price,sd.dish_id sd_dish_id,
+               sd.name sd_name,sd.copies sd_copies,sd.id sd_id,
+               sd.setmeal_id sd_setmeal_id
+        from setmeal s
+                 left join setmeal_dish sd on s.id = sd.setmeal_id
+                 left join category c on s.category_id = c.id
+        <where>
+            <if test="name != null and name != ''">
+                and  s.name like concat('%',#{name},'%')
+            </if>
+            <if test="categoryId != null">
+                and s.category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and s.status = #{status}
+            </if>
+        </where>
     </select>
 </mapper>

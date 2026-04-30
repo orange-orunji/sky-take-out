@@ -1,7 +1,10 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.mapper.SetmealMapper;
+import com.sky.result.PageResult;
 import com.sky.service.SetMealService;
 import com.sky.vo.SetmealVO;
 import org.springframework.stereotype.Service;
@@ -13,22 +16,18 @@ public class SetMealServiceImpl implements SetMealService {
 
     @Resource
     private SetmealMapper setMealMapper;
-    @Resource
-    private SetMealDishMapper setMealDishMapper;
 
     /**
      * 套餐分页查询
+     *
      * @param dto
      * @return
      */
     @Override
-    public SetmealVO page(SetmealPageQueryDTO dto) {
-//        PageHelper.startPage(dto.getPage(), dto.getPageSize());
-//        Setmeal setmeal = setMealMapper.page(dto);
-//        SetmealDish setmealDish = setMealMapper.page(dto);
-//        SetmealVO result = new SetmealVO();
-//        BeanUtils.copyProperties(setmeal, result);
-        return null;
+    public PageResult page(SetmealPageQueryDTO dto) {
+        PageHelper.startPage(dto.getPage(),dto.getPageSize());
+        Page<SetmealVO> page = setMealMapper.page(dto);
+        return new PageResult(page.getTotal(),page.getResult());
     }
 
     /**
