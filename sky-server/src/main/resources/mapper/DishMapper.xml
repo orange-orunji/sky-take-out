@@ -42,6 +42,9 @@
                 </set>
                 where id = #{id}
         </update>
+        <update id="setStatus">
+                update dish set status = #{status} where id = #{id}
+        </update>
         <delete id="delete">
                 delete from dish where id in
                 <foreach item="id" collection="ids" separator="," open="(" close=")">

@@ -2,13 +2,16 @@ package com.sky.controller.admin;
 
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
+import com.sky.mapper.DishMapper;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -21,6 +24,8 @@ import java.util.List;
 public class DishController {
     @Resource
     private DishService dishService;
+    @Resource
+    private DishMapper dishMapper;
 
     /**
      * 新增菜品
@@ -94,5 +99,19 @@ public class DishController {
     public Result<Object> getBySetMealId(@RequestParam("categoryId") Long categoryId){
         log.info("根据分类id查询菜品：{}", categoryId);
         return Result.success(dishService.getByCategoryId(categoryId));
+    }
+
+    /**
+     * 起售、停售菜品
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("起售、停售菜品")
+    public Result<Object> setStatus(@PathVariable Integer status,@RequestParam("id") Long id){
+        log.info("起售、停售菜品：{}", status);
+        dishMapper.setStatus(status,id);
+        return Result.success();
     }
 }
