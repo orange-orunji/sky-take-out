@@ -27,6 +27,12 @@
                         <if test="status != null">
                                 status = #{status},
                         </if>
+                        <if test="createTime!=null">
+                        create_time = #{createTime}
+                        </if>
+                        <if test="createUser!=null">
+                        create_user = #{createUser}
+                        </if>
                         <if test="updateUser!=null">
                                 update_user = #{updateUser},
                         </if>

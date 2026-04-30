@@ -70,7 +70,7 @@ public interface SetmealMapper {
      * @param id
      * @param status
      */
-    @Update("update setmeal set status = #{status} where id = #{id}")
+    @Update("update setmeal set status = #{status},update_user=#{updateUser},update_time=#{updateTime} where id = #{id}")
     @AutoFill(value = OperationType.UPDATE)
     void setStatus(Integer id, Integer status);
 
