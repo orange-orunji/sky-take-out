@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class SetMealServiceImpl implements SetMealService {
@@ -58,9 +59,11 @@ public class SetMealServiceImpl implements SetMealService {
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(dto,setmeal);
         setMealMapper.save(setmeal);
-        SetmealDish setmealDish = new SetmealDish();
-        setmealDish.setSetmealId(setmeal.getId());
-        BeanUtils.copyProperties(dto,setmealDish);
-        SetmealWithDishMapper.insertBatch(dto.getSetmealDishes());
+        List<SetmealDish> setmealDishes = dto.getSetmealDishes();
+        if(setmealDishes!=null && !setmealDishes.isEmpty()){
+            Long id = setmeal.getId();
+            setmealDishes.forEach(dish -> dish.setSetmealId(id));
+            SetmealWithDishMapper.insertBatch(setmealDishes);
+        }
     }
 }

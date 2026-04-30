@@ -4,9 +4,9 @@
 <mapper namespace="com.sky.mapper.SetmealWithDishMapper">
 <!--    批量插入套餐相关的菜品-->
     <insert id="insertBatch">
-        INSERT INTO setmeal_dish (setmeal_id,dish_id,name,dish_flavor,price,copies) VALUES
+        INSERT INTO setmeal_dish (setmeal_id,dish_id,name,price,copies) VALUES
         <foreach collection="setmealDishes" item="dish" separator=",">
-            (#{dish.setmealId},#{dish.dishId},#{dish.name},#{dish.dishFlavor},#{dish.price},#{item.copies})
+            (#{dish.setmealId},#{dish.dishId},#{dish.name},#{dish.price},#{dish.copies})
         </foreach>
     </insert>
 </mapper>

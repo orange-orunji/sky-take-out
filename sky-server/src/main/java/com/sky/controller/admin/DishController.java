@@ -83,4 +83,16 @@ public class DishController {
         dishService.updateWithFalvor(dishDTO);
         return Result.success();
     }
+
+    /**
+     * 根据分类id查询菜品
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation("根据分类id查询菜品")
+    public Result<Object> getBySetMealId(@RequestParam("categoryId") Long categoryId){
+        log.info("根据分类id查询菜品：{}", categoryId);
+        return Result.success(dishService.getByCategoryId(categoryId));
+    }
 }
