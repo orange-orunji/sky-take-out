@@ -18,6 +18,11 @@ spring:
       max-request-size: 10MB
   aop:
     proxy-target-class: true
+  redis:
+    host: ${sky.redis.host}
+    port: ${sky.redis.port}
+    password: ${sky.redis.password}
+    database: 10
 mybatis:
   #mapper配置文件
   mapper-locations: classpath:mapper/*.xml
