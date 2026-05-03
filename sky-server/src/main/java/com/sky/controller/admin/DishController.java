@@ -9,13 +9,15 @@ import com.sky.service.DishService;
 import com.sky.vo.DishVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -26,6 +28,8 @@ public class DishController {
     private DishService dishService;
     @Resource
     private DishMapper dishMapper;
+    @Resource
+    private RedisTemplate redisTemplate;
 
     /**
      * 新增菜品
@@ -34,10 +38,12 @@ public class DishController {
      */
     @PostMapping
     @ApiOperation("新增菜品")
+    @CacheEvict(cacheNames = "categoryCache",allEntries = true)
     public Result add(@RequestBody DishDTO dishDTO){
         log.info("新增菜品：{}", dishDTO);
         dishService.saveWithFlavor(dishDTO);
-
+//        String s = "dish_" + dishDTO.getCategoryId();
+//        redisTemplate.delete(s);
         return Result.success();
     }
 
@@ -58,8 +64,10 @@ public class DishController {
      */
     @DeleteMapping
     @ApiOperation("菜品批量删除")
+    @CacheEvict(cacheNames = "categoryCache",allEntries = true)
     public Result delete(@RequestParam List<Long> ids){
         log.info("批量删除菜品：{}", ids);
+//        cleanCache();
         dishService.deleteById(ids);
         return Result.success();
     }
@@ -83,8 +91,10 @@ public class DishController {
      */
     @PutMapping
     @ApiOperation("修改菜品")
+    @CacheEvict(cacheNames = "categoryCache",allEntries = true)
     public Result update(@RequestBody DishDTO dishDTO){
         log.info("修改菜品：{}", dishDTO);
+//        cleanCache();
         dishService.updateWithFalvor(dishDTO);
         return Result.success();
     }
@@ -96,6 +106,7 @@ public class DishController {
      */
     @GetMapping("/list")
     @ApiOperation("根据分类id查询菜品")
+    @CacheEvict(cacheNames = "categoryCache",  key= "#categoryId")
     public Result<Object> getBySetMealId(@RequestParam("categoryId") Long categoryId){
         log.info("根据分类id查询菜品：{}", categoryId);
         return Result.success(dishService.getByCategoryId(categoryId));
@@ -109,9 +120,16 @@ public class DishController {
      */
     @PostMapping("/status/{status}")
     @ApiOperation("起售、停售菜品")
+    @CacheEvict(cacheNames = "categoryCache",allEntries = true)
     public Result<Object> setStatus(@PathVariable Integer status,@RequestParam("id") Long id){
         log.info("起售、停售菜品：{}", status);
         dishMapper.setStatus(status,id);
+//        cleanCache();
         return Result.success();
     }
+
+//    private void cleanCache(){
+//        Set o = redisTemplate.keys("dish_*");
+//        redisTemplate.delete(o);
+//    }
 }

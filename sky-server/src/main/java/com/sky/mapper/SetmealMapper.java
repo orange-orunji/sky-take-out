@@ -97,4 +97,13 @@ public interface SetmealMapper {
             "from setmeal_dish sd left join dish d on sd.dish_id = d.id " +
             "where sd.setmeal_id = #{setmealId}")
     List<DishItemVO> getDishItemBySetmealId(Long setmealId);
+
+    /**
+     * 检查套餐中是否包含未起售的菜品
+     * @param setmealId
+     * @return 返回未起售菜品的数量
+     */
+    @Select("select count(*) from setmeal_dish sd left join dish d on sd.dish_id = d.id " +
+            "where sd.setmeal_id = #{setmealId} and d.status = 0")
+    Integer countDisabledDishes(Long setmealId);
 }

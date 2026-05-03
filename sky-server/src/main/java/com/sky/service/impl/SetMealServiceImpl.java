@@ -92,6 +92,12 @@ public class SetMealServiceImpl implements SetMealService {
      */
     @Override
     public void setStatus(Integer id, Integer status) {
+        if (status == 1) {
+            Integer disabledCount = setMealMapper.countDisabledDishes(Long.valueOf(id));
+            if (disabledCount != null && disabledCount > 0) {
+                throw new RuntimeException(MessageConstant.SETMEAL_ENABLE_FAILED);
+            }
+        }
         setMealMapper.setStatus(id,status);
     }
 
