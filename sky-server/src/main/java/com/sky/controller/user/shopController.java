@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 @Slf4j
-@RestController("userController")
+@RestController("userStatusController")
 @RequestMapping("/user/shop")
 @Api(tags = "店铺相关管理")
 public class shopController {

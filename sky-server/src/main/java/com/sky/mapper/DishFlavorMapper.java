@@ -30,5 +30,6 @@ public interface DishFlavorMapper {
      * @return
      */
     @Select("select * from dish_flavor where dish_id = #{id}")
-    List<DishFlavor> getById(Long id);
+    List<DishFlavor> getByDishId(Long id);
+
 }

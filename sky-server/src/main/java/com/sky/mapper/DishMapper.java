@@ -70,7 +70,7 @@ public interface DishMapper {
      * @param categoryId
      * @return
      */
-    List<DishVO> getByCatecoryId(Long categoryId);
+    List<DishVO> getByCatecoryId(Dish categoryId);
 
     /**
      * 修改菜品的起售停售状态
@@ -78,4 +78,5 @@ public interface DishMapper {
      * @param id
      */
     void setStatus(Integer status, Long id);
+
 }
