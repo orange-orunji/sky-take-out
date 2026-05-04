@@ -50,7 +50,7 @@ sky:
     #设置jwt过期时间
     user-ttl: 7200000
     user-token-name: authentication
-    user-secret-key: orunji
+    user-secret-key: itheima
   alioss:
     access-key-secret: ${sky.alioss.access-key-secret}
     access-key-id: ${sky.alioss.access-key-id}

@@ -1,5 +1,6 @@
 package com.sky.controller.user;
 
+import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.UserLoginDTO;
 import com.sky.entity.User;
 import com.sky.properties.JwtProperties;
@@ -22,7 +23,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/user/user")
 @Api("C端员工相关接口")
 public class UserController {
 
@@ -37,16 +38,21 @@ public class UserController {
      * @param userLoginDTO
      * @return
      */
-    @PostMapping("/user/login")
+    @PostMapping("/login")
     @ApiOperation("微信用户登录")
     public Result<UserLoginVO> Longin(@RequestBody UserLoginDTO userLoginDTO) throws Exception {
-        log.info("微信用户登录：{}", userLoginDTO);
+        log.info("微信用户登录：{}", userLoginDTO.getCode());
         //获取微信用户信息
         User user = userService.getUser(userLoginDTO);
         //生成Jwt令牌
         Map<String,Object> claim = new HashMap<>();
-        claim.put("id",user.getId());
+        claim.put(JwtClaimsConstant.USER_ID,user.getId());
         String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(),jwtProperties.getUserTtl(),claim);
-        return Result.success(new UserLoginVO(user.getId(),user.getOpenid(),token));
+        UserLoginVO userLoginVO = UserLoginVO.builder()
+                .id(user.getId())
+                .openid(user.getOpenid())
+                .token(token)
+                .build();
+        return Result.success(userLoginVO);
     }
 }
