@@ -5,6 +5,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
+import com.sky.dto.OrdersDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -194,12 +196,12 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public OrderVO getOrderDetail(Long id) {
+    public OrdersDTO getOrderDetail(Long id) {
         Orders order = orderMapper.getByNumber(String.valueOf(id));
-        OrderVO orderVO = new OrderVO();
+        OrdersDTO orderVO = new OrdersDTO();
         BeanUtils.copyProperties(order,orderVO);
 
-        orderVO.setOrderDetailList(orderDetailMapper.pageQuery(order.getId()));
+        orderVO.setOrderDetails(orderDetailMapper.pageQuery(order.getId()));
         return orderVO;
     }
 
@@ -269,4 +271,80 @@ public class OrderServiceImpl implements OrderService {
         }
         shoppingCartMapper.insertBatch(shoppingCarts);
     }
+
+    /**
+     * 订单列表
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult page(OrdersPageQueryDTO ordersPageQueryDTO) {
+        PageHelper.startPage(ordersPageQueryDTO.getPage(),ordersPageQueryDTO.getPageSize());
+        Page<Orders> list = (Page<Orders>) orderMapper.list(ordersPageQueryDTO);
+
+        List<Object> lists = new ArrayList<>();
+        if(list!=null&&!list.isEmpty()){
+            for (Orders orders : list) {
+                OrderVO orderVO = new OrderVO();
+                BeanUtils.copyProperties(orders,orderVO);
+
+                orderVO.setOrderDetailList(orderDetailMapper.pageQuery(orders.getId()));
+                lists.add(orderVO);
+            }
+        }
+
+        return new PageResult(list.getTotal(),lists);
+    }
+
+    /**
+     * 接单
+     * @param ordersDTO
+     */
+    @Override
+    public void confirm(OrdersDTO ordersDTO) {
+        Orders orders = new Orders();
+        BeanUtils.copyProperties(ordersDTO,orders);
+        orders.setStatus(Orders.CONFIRMED);
+        orderMapper.update(orders);
+    }
+    /**
+     * 拒单
+     * @param orders
+     */
+    @Override
+    public void rejection(Orders orders) {
+        orders.setStatus(Orders.CANCELLED);
+        orderMapper.update(orders);
+    }
+    /**
+     * 取消订单
+     * @param orders
+     */
+    @Override
+    public void cancelByOrder(Orders orders) {
+        orders.setStatus(Orders.CANCELLED);
+        orderMapper.update(orders);
+    }
+
+    /**
+     * 派送订单
+     * @param orders
+     */
+    @Override
+    public void delivery(Orders orders) {
+        orders.setStatus(Orders.DELIVERY_IN_PROGRESS);
+        orderMapper.update(orders);
+    }
+
+    /**
+     * 完成订单
+     * @param orders
+     */
+    @Override
+    public void complete(Orders orders) {
+        orders.setStatus(Orders.COMPLETED);
+        orderMapper.update(orders);
+    }
+
+
 }
