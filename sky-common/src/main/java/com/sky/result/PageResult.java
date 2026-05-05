@@ -1,5 +1,6 @@
 package com.sky.result;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class PageResult implements Serializable {
 
     private long total; //总记录数
 
+    @JsonProperty("list")
     private List records; //当前页数据集合
 
 }

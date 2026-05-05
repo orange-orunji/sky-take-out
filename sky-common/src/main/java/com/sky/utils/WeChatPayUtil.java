@@ -42,7 +42,7 @@ public class WeChatPayUtil {
     public static final String REFUNDS = "https://api.mch.weixin.qq.com/v3/refund/domestic/refunds";
 
     @Autowired
-    private WeChatProperties weChatProperties;
+    private  WeChatProperties weChatProperties;
 
     /**
      * 获取调用微信接口的客户端工具对象
