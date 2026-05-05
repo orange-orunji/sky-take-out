@@ -37,11 +37,11 @@ public class OrderController {
      */
     @GetMapping("/conditionSearch")
     @ApiOperation("订单搜索")
-    public Result<PageResult> page(@ParametersAreNullableByDefault LocalDateTime beginTime,
-                                   @ParametersAreNullableByDefault LocalDateTime endTime,
+    public Result<PageResult> page(LocalDateTime beginTime,
+                                   LocalDateTime endTime,
                                    String number,
-                                   int page,
-                                   int pageSize,
+                                   @ParametersAreNullableByDefault Integer page,
+                                   @ParametersAreNullableByDefault Integer pageSize,
                                    String phone,
                                    Integer status){
         log.info("订单搜索:开始时间{},结束时间{},用户手机号{},订单状态{}",beginTime,endTime,phone,status);
@@ -56,6 +56,7 @@ public class OrderController {
 
         return Result.success(orderService.page(ordersPageQueryDTO));
     }
+
 
     /**
      * 订单查询
