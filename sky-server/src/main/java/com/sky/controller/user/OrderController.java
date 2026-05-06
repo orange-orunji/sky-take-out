@@ -50,17 +50,23 @@ public class OrderController {
 //        OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
 //        log.info("生成预支付交易单：{}", orderPaymentVO);
 //        return Result.success(orderPaymentVO);
+//        log.info("订单支付：{}", ordersPaymentDTO);
+//
+//        OrderPaymentVO orderPaymentVO = new OrderPaymentVO();
+//        orderPaymentVO.setPackageStr("prepay_id=test_prepay_id");
+//        orderPaymentVO.setNonceStr("test_nonce_str");
+//        orderPaymentVO.setPaySign("test_pay_sign");
+//        orderPaymentVO.setTimeStamp(String.valueOf(System.currentTimeMillis() / 1000));
+//
+//        log.info("模拟支付成功，生成预支付交易单：{}", orderPaymentVO);
+//        return Result.success(orderPaymentVO);
         log.info("订单支付：{}", ordersPaymentDTO);
+        OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
+        log.info("生成预支付交易单：{}", orderPaymentVO);
 
-        OrderPaymentVO orderPaymentVO = new OrderPaymentVO();
-        orderPaymentVO.setPackageStr("prepay_id=test_prepay_id");
-        orderPaymentVO.setNonceStr("test_nonce_str");
-        orderPaymentVO.setPaySign("test_pay_sign");
-        orderPaymentVO.setTimeStamp(String.valueOf(System.currentTimeMillis() / 1000));
+        orderService.paySuccess(ordersPaymentDTO.getOrderNumber());
 
-        log.info("模拟支付成功，生成预支付交易单：{}", orderPaymentVO);
         return Result.success(orderPaymentVO);
-
     }
 
     /**

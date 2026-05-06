@@ -5,6 +5,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
+import com.sky.controller.admin.WebSocketServer;
 import com.sky.dto.OrdersDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
@@ -29,9 +30,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -49,6 +48,8 @@ public class OrderServiceImpl implements OrderService {
     private UserMapper userMapper;
     @Resource
     private WeChatPayUtil weChatPayUtil;
+    @Resource
+    private WebSocketServer webSocketServer;
 
     /**
      * 用户下单
@@ -122,13 +123,14 @@ public class OrderServiceImpl implements OrderService {
         Long userId = BaseContext.getCurrentId();
         User user = userMapper.getById(userId);
 
-        //调用微信支付接口，生成预支付交易单
-        JSONObject jsonObject = weChatPayUtil.pay(
-                ordersPaymentDTO.getOrderNumber(), //商户订单号
-                new BigDecimal(0.01), //支付金额，单位 元
-                "苍穹外卖订单", //商品描述
-                user.getOpenid() //微信用户的openid
-        );
+//        //调用微信支付接口，生成预支付交易单
+//        JSONObject jsonObject = weChatPayUtil.pay(
+//                ordersPaymentDTO.getOrderNumber(), //商户订单号
+//                new BigDecimal(0.01), //支付金额，单位 元
+//                "苍穹外卖订单", //商品描述
+//                user.getOpenid() //微信用户的openid
+//        );
+        JSONObject jsonObject = new JSONObject();
 
         if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
             throw new OrderBusinessException("该订单已支付");
@@ -159,6 +161,14 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         orderMapper.update(orders);
+
+        Map map = new HashMap();
+        map.put("type",1);
+        map.put("orderId",ordersDB.getId());
+        map.put("content","订单号"+outTradeNo);
+
+
+        webSocketServer.sendToAllClient(JSONObject.toJSONString(map));
     }
 
     /**

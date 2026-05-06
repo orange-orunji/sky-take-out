@@ -115,13 +115,13 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         //将自己的消息转化器加入容器中
         converters.add(0,converter);
     }
-
-    @Configuration
-    public class WebSocketConfiguration {
-
-        @Bean
-        public ServerEndpointExporter serverEndpointExporter() {
-            return new ServerEndpointExporter();
-        }
-    }
+//
+//    @Configuration
+//    public class WebSocketConfiguration {
+//
+//        @Bean
+//        public ServerEndpointExporter serverEndpointExporter() {
+//            return new ServerEndpointExporter();
+//        }
+//    }
 }
