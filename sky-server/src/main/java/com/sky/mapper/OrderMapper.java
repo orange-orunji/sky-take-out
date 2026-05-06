@@ -1,12 +1,12 @@
 package com.sky.mapper;
 
-import com.sky.dto.OrdersDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -43,4 +43,13 @@ public interface OrderMapper {
      */
     @Delete("delete from orders where id = #{id}")
     void delete(Long id);
+
+    /**
+     * 根据状态和下单时间批量查询的订单数据
+     * @param pendingPayment
+     * @param localDateTime
+     * @return
+     */
+    @Select("select * from orders where status = #{pendingPayment} and order_time < #{localDateTime}")
+    List<Orders> find(Integer pendingPayment, LocalDateTime localDateTime);
 }

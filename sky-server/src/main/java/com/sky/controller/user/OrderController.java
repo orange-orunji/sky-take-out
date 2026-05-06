@@ -71,7 +71,6 @@ public class OrderController {
     @ApiOperation("历史订单查询")
     public Result<PageResult> historyOrders(Integer page,Integer pageSize,Integer status){
         log.info("历史订单查询");
-        if(status ==  null) status = 1;
         PageResult result = orderService.historyOrders(page, pageSize, status);
         log.info("历史订单查询结果：{}", result);
         return Result.success(result);
