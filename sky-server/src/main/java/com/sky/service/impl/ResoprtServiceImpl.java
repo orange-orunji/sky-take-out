@@ -1,8 +1,10 @@
 package com.sky.service.impl;
 
+import com.sky.entity.Orders;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.ResoprtService;
+import com.sky.vo.OrderReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import lombok.extern.slf4j.Slf4j;
@@ -78,6 +80,52 @@ public class ResoprtServiceImpl implements ResoprtService {
                 .totalUserList(StringUtil.join(",",totalUserCount))
                 .newUserList(StringUtil.join(",",newUserCount))
                 .build();
+    }
+
+
+    /**
+     * 订单统计
+     * @param begin
+     * @param end
+     * @return
+     */
+    @Override
+    public OrderReportVO orderStatistics(LocalDate begin, LocalDate end) {
+        List<LocalDate> dateList = getLocalDateList(begin, end);
+
+        List<Integer> orderCountList = new ArrayList<>();
+        List<Integer> validOrderCountList = new ArrayList<>();
+
+        for (LocalDate date : dateList) {
+            LocalDateTime beginTime = LocalDateTime.of(date,LocalTime.MIN);
+            LocalDateTime endTime = LocalDateTime.of(date,LocalTime.MAX);
+
+            orderCountList.add(getOrderCount(beginTime,endTime,null));
+
+            validOrderCountList.add(getOrderCount(beginTime,endTime, Orders.COMPLETED));
+        }
+
+        Integer orderCount = orderCountList.stream().reduce(Integer::sum).orElse(0);
+        Integer validOrderCount = validOrderCountList.stream().reduce(Integer::sum).orElse(0);
+
+        double orderCompletionRate = 0.0;
+        if(orderCount!=0){
+            orderCompletionRate = (double) validOrderCount /orderCount;
+        }
+
+        return OrderReportVO
+                .builder()
+                .dateList(StringUtil.join(",",dateList))
+                .orderCountList(StringUtil.join(",",orderCountList))
+                .validOrderCountList(StringUtil.join(",",validOrderCountList))
+                .totalOrderCount(orderCount)
+                .validOrderCount(validOrderCount)
+                .orderCompletionRate(orderCompletionRate)
+                .build();
+    }
+
+    private Integer getOrderCount(LocalDateTime begin,LocalDateTime end,Integer status){
+        return orderMapper.getByDate(begin,end,status);
     }
 
     /**

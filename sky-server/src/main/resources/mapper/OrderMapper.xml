@@ -56,9 +56,17 @@
     <select id="turnoverStatistics" resultType="java.lang.Double">
         select IFNULL(sum(amount),0) from orders
         <where>
-            <if test = "begin != null">and order_time &gt; #{begin}</if>
+            <if test = "begin != null">and order_time &gt;= #{begin}</if>
             <if test = "end != null">and order_time &lt; #{end}</if>
             <if test = "status != null">and status = #{status}</if>
         </where>
+    </select>
+    <select id="getByDate" resultType="java.lang.Integer">
+        select ifnull(count(id),0) from orders
+            <where>
+                <if test = "begin != null">and order_time &gt;= #{begin}</if>
+                <if test = "end != null">and order_time &lt;= #{end}</if>
+                <if test = "status != null">and status = #{status}</if>
+            </where>
     </select>
 </mapper>

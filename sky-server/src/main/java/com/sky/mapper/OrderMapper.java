@@ -71,4 +71,12 @@ public interface OrderMapper {
     double turnoverStatistics(Map map);
 
 
+    /**
+     * 获取订单数量
+     * @param begin
+     * @param end
+     * @param status
+     * @return
+     */
+    Integer getByDate(LocalDateTime begin, LocalDateTime end, Integer status);
 }
