@@ -1,11 +1,13 @@
 package com.sky.mapper;
 
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -79,4 +81,11 @@ public interface OrderMapper {
      * @return
      */
     Integer getByDate(LocalDateTime begin, LocalDateTime end, Integer status);
+
+    /**
+     * 统计指定时间区间内销量排名前10的菜品
+     * @param  map
+     * @return
+     */
+    List<GoodsSalesDTO> top10Statistics(Map map);
 }

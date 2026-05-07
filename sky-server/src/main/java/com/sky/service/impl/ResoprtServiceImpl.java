@@ -1,14 +1,19 @@
 package com.sky.service.impl;
 
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
+import com.sky.mapper.DishMapper;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.ResoprtService;
 import com.sky.vo.OrderReportVO;
+import com.sky.vo.SalesTop10ReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,6 +34,8 @@ public class ResoprtServiceImpl implements ResoprtService {
     private OrderMapper  orderMapper;
     @Resource
     private UserMapper userMapper;
+    @Autowired
+    private DishMapper dishMapper;
 
     /**
      * 营业额统计
@@ -121,6 +129,25 @@ public class ResoprtServiceImpl implements ResoprtService {
                 .totalOrderCount(orderCount)
                 .validOrderCount(validOrderCount)
                 .orderCompletionRate(orderCompletionRate)
+                .build();
+    }
+
+    /**
+     * top10菜品统计
+     * @param begin
+     * @param end
+     * @return
+     */
+    @Override
+    public SalesTop10ReportVO top10Statistics(LocalDate begin, LocalDate end) {
+        Map map = new HashMap();
+        map.put("begin",LocalDateTime.of(begin,LocalTime.MIN));
+        map.put("end",LocalDateTime.of(end,LocalTime.MAX));
+        map.put("status",Orders.COMPLETED);
+        List<GoodsSalesDTO> list = orderMapper.top10Statistics(map);
+        return SalesTop10ReportVO.builder()
+                .nameList(StringUtils.join(list.stream().map(GoodsSalesDTO::getName).collect(Collectors.toList()),","))
+                .numberList(StringUtils.join(list.stream().map(GoodsSalesDTO::getNumber).collect(Collectors.toList()),","))
                 .build();
     }
 
