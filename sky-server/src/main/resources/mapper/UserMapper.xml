@@ -10,4 +10,11 @@
                         #{sex}, #{idNumber}, #{avatar},
                         #{createTime})
         </insert>
+    <select id="getUserCount" resultType="java.lang.Integer">
+        select ifnull(count(id),0) from user
+        <where>
+            <if test="begin != null">and create_time &gt; #{begin}</if>
+            <if test="end != null">and create_time &lt; #{end}</if>
+        </where>
+    </select>
 </mapper>
