@@ -6,6 +6,7 @@ import com.sky.entity.Orders;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
+import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -133,5 +134,12 @@ public class OrderController {
         orders.setId(id);
         orderService.complete(orders);
         return Result.success();
+    }
+
+    @GetMapping("/statistics")
+    @ApiOperation("统计各个状态订单的信息")
+    public Result<OrderStatisticsVO> statistics(){
+        log.info("统计各个状态订单的信息");
+        return Result.success(orderService.statistics());
     }
 }

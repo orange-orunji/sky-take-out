@@ -19,13 +19,13 @@ import com.sky.result.PageResult;
 import com.sky.service.OrderService;
 import com.sky.utils.WeChatPayUtil;
 import com.sky.vo.OrderPaymentVO;
+import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -374,6 +374,21 @@ public class OrderServiceImpl implements OrderService {
         map.put("content","订单号:"+orders.getNumber());
 
         webSocketServer.sendToAllClient(JSONObject.toJSONString(map));
+    }
+
+    /**
+     * 订单统计
+     * @return
+     */
+    @Override
+    public OrderStatisticsVO statistics() {
+
+        return OrderStatisticsVO
+                .builder()
+                .toBeConfirmed(orderMapper.getByDate(LocalDateTime.now().minusDays(1),LocalDateTime.now(),Orders.TO_BE_CONFIRMED))
+                .confirmed(orderMapper.getByDate(LocalDateTime.now().minusDays(1),LocalDateTime.now(),Orders.CONFIRMED))
+                .deliveryInProgress(orderMapper.getByDate(LocalDateTime.now().minusDays(1),LocalDateTime.now(),Orders.DELIVERY_IN_PROGRESS))
+                .build();
     }
 
 
