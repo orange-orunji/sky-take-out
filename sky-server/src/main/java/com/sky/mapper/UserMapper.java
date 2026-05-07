@@ -39,4 +39,11 @@ public interface UserMapper {
      * @return
      */
     Integer getUserCount(Map map);
+
+    /**
+     * 根据条件统计用户数量
+     * @param map
+     * @return
+     */
+    Integer countByMap(Map map);
 }

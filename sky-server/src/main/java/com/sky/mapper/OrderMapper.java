@@ -88,4 +88,18 @@ public interface OrderMapper {
      * @return
      */
     List<GoodsSalesDTO> top10Statistics(Map map);
+
+    /**
+     * 统计指定时间区间内营业额
+     * @param  map
+     * @return
+     */
+    Double sumByMap(Map map);
+
+    /**
+     * 统计指定时间区间内订单数
+     * @param map
+     * @return
+     */
+    Integer countByMap(Map map);
 }
