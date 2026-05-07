@@ -8,6 +8,7 @@ import com.sky.entity.Orders;
 import com.sky.result.PageResult;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
 
 public interface OrderService {
     /**
@@ -40,7 +41,7 @@ public interface OrderService {
      * @param id
      * @return
      */
-    OrdersDTO getOrderDetail(Long id);
+    OrderVO detail(Long id);
 
     /**
      * 取消订单
@@ -90,4 +91,10 @@ public interface OrderService {
      * @param orders
      */
     void complete(Orders orders);
+
+    /**
+     * 催单提醒
+     * @param id
+     */
+    void reminder(Long id);
 }

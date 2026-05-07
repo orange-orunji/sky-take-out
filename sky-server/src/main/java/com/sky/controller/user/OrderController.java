@@ -1,7 +1,5 @@
 package com.sky.controller.user;
 
-import com.sky.dto.OrdersDTO;
-import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.result.PageResult;
@@ -89,9 +87,9 @@ public class OrderController {
      */
     @GetMapping("/orderDetail/{id}")
     @ApiOperation("订单详情")
-    public Result<OrdersDTO> getOrderDetail(@PathVariable Long id){
+    public Result<OrderVO> getOrderDetail(@PathVariable Long id){
         log.info("订单详情:{}",id);
-        return Result.success(orderService.getOrderDetail(id));
+        return Result.success(orderService.detail(id));
     }
 
     /**
@@ -107,11 +105,29 @@ public class OrderController {
         return Result.success();
     }
 
+    /**
+     * @apiNote 再来一单
+     * @param id
+     * @return
+     */
     @PostMapping("/repetition/{id}")
     @ApiOperation("再来一单")
     public Result repetition(@PathVariable Long id){
         log.info("再来一单：{}",id);
         orderService.repetition(id);
+        return Result.success();
+    }
+
+    /**
+     * 订单催单
+     * @param id
+     * @return
+     */
+    @GetMapping("/reminder/{id}")
+    @ApiOperation("催单提醒")
+    public Result reminder(@PathVariable Long id){
+        log.info("催单提醒：{}",id);
+        orderService.reminder(id);
         return Result.success();
     }
 }

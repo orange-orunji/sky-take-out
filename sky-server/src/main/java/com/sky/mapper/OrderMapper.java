@@ -22,7 +22,7 @@ public interface OrderMapper {
      * 根据订单号查询订单
      * @param orderNumber
      */
-    @Select("select * from orders where number = #{orderNumber}")
+    @Select("select * from orders where id = #{orderNumber}")
     Orders getByNumber(String orderNumber);
 
     /**
@@ -52,4 +52,12 @@ public interface OrderMapper {
      */
     @Select("select * from orders where status = #{pendingPayment} and order_time < #{localDateTime}")
     List<Orders> find(Integer pendingPayment, LocalDateTime localDateTime);
+
+    /**
+     * 根据id查询订单数据
+     * @param id
+     * @return
+     */
+    @Select("select * from orders where id = #{id}")
+    Orders getById(Long id);
 }

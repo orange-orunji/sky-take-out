@@ -206,12 +206,12 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public OrdersDTO getOrderDetail(Long id) {
-        Orders order = orderMapper.getByNumber(String.valueOf(id));
-        OrdersDTO orderVO = new OrdersDTO();
+    public OrderVO detail(Long id) {
+        Orders order = orderMapper.getById(id);
+        OrderVO orderVO = new OrderVO();
         BeanUtils.copyProperties(order,orderVO);
 
-        orderVO.setOrderDetails(orderDetailMapper.pageQuery(order.getId()));
+        orderVO.setOrderDetailList(orderDetailMapper.pageQuery(order.getId()));
         return orderVO;
     }
 
@@ -354,6 +354,26 @@ public class OrderServiceImpl implements OrderService {
     public void complete(Orders orders) {
         orders.setStatus(Orders.COMPLETED);
         orderMapper.update(orders);
+    }
+
+    /**
+     * 催单提醒
+     * @param id
+     */
+    @Override
+    public void reminder(Long id) {
+        Orders orders = orderMapper.getById(id);
+
+        if(orders==null){
+            throw  new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+
+        Map map = new HashMap();
+        map.put("type","2");
+        map.put("orderId",id);
+        map.put("content","订单号:"+orders.getNumber());
+
+        webSocketServer.sendToAllClient(JSONObject.toJSONString(map));
     }
 
 
