@@ -6,17 +6,22 @@ import com.sky.mapper.DishMapper;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.ResoprtService;
-import com.sky.vo.OrderReportVO;
-import com.sky.vo.SalesTop10ReportVO;
-import com.sky.vo.TurnoverReportVO;
-import com.sky.vo.UserReportVO;
+import com.sky.service.WorkspaceService;
+import com.sky.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.util.StringUtil;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,8 +39,8 @@ public class ResoprtServiceImpl implements ResoprtService {
     private OrderMapper  orderMapper;
     @Resource
     private UserMapper userMapper;
-    @Autowired
-    private DishMapper dishMapper;
+    @Resource
+    private WorkspaceService workspaceService;
 
     /**
      * 营业额统计
@@ -149,6 +154,67 @@ public class ResoprtServiceImpl implements ResoprtService {
                 .nameList(StringUtils.join(list.stream().map(GoodsSalesDTO::getName).collect(Collectors.toList()),","))
                 .numberList(StringUtils.join(list.stream().map(GoodsSalesDTO::getNumber).collect(Collectors.toList()),","))
                 .build();
+    }
+
+    @Override
+    public void excel(HttpServletResponse response) throws Exception {
+        LocalDate begin = LocalDate.now().minusDays(30);
+        LocalDate end = LocalDate.now().minusDays(1);
+
+        //获取表头数据
+        LocalDateTime beginTime = LocalDateTime.of(begin, LocalTime.MIN);
+        LocalDateTime endTime = LocalDateTime.of(end, LocalTime.MAX);
+        BusinessDataVO busDay = workspaceService.getBusinessData(beginTime, endTime);
+
+        //获取输入对象
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("template/运营数据报表模板.xlsx");
+        //获取AOP对象
+        XSSFWorkbook book = null;
+        if (in != null) {
+            book = new XSSFWorkbook(in);
+        }
+
+        //获取sheet页对象
+        XSSFSheet sheet = null;
+        if (book != null) {
+            sheet = book.getSheetAt(0);
+        }
+        //获取行对象
+        XSSFRow row = sheet.createRow(2);
+        row.createCell(2).setCellValue(begin+"至"+end+"的营业额统计");
+        //对表头数据进行赋值
+        row= sheet.getRow(3);
+        row.createCell(2).setCellValue(busDay.getTurnover());
+        row.createCell(4).setCellValue(busDay.getOrderCompletionRate());
+        row.createCell(6).setCellValue(busDay.getNewUsers());
+        row = sheet.getRow(4);
+        row.createCell(2).setCellValue(busDay.getValidOrderCount());
+        row.createCell(4).setCellValue(busDay.getUnitPrice());
+
+        //获取三十天内的营业数据并赋值到表体当中
+        for (int i = 0; i < 30; i++) {
+            BusinessDataVO bd = workspaceService.getBusinessData(LocalDateTime.of(begin,LocalTime.MIN),LocalDateTime.of(begin,LocalTime.MAX));
+
+            row = sheet.createRow(i+7);
+            row.createCell(1).setCellValue(begin.toString());
+            row.createCell(2).setCellValue(bd.getTurnover());
+            row.createCell(3).setCellValue(bd.getValidOrderCount());
+            row.createCell(4).setCellValue(bd.getOrderCompletionRate());
+            row.createCell(5).setCellValue(bd.getUnitPrice());
+            row.createCell(6).setCellValue(bd.getNewUsers());
+
+            begin = begin.plusDays(1);
+        }
+
+        //通过servlet向用户端存入数据
+        ServletOutputStream sm = response.getOutputStream();
+        book.write(sm);
+
+        book.close();
+        sm.close();
+        if (in != null) {
+            in.close();
+        }
     }
 
     private Integer getOrderCount(LocalDateTime begin,LocalDateTime end,Integer status){
